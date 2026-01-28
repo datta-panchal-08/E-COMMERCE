@@ -19,6 +19,7 @@ router.post("/change-password/:email",changePassword)
 router.post("/logout",isAuthenticated,logout)
 
 // Get Requests
-router.get("/all-users",isAuthenticated,isAdmin,getallUsers)
+router.get("/all-users",isAuthenticated,isAdmin,getallUsers);
+router.get("/get-user/:userId",isAuthenticated,getUserById);
 
 export  default router
