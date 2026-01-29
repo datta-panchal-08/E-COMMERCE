@@ -55,52 +55,65 @@ export const register = async (req, res) => {
 }
 
 export const verify = async (req, res) => {
-    try {
-        const authHeader = req.headers.authorization;
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return res.status(400).json({
-                success: false,
-                message: "Authorization token is missing or invalid"
-            })
-        }
-        const token = authHeader.split(" ")[1];
-        let decoded;
-        try {
-            decoded = jwt.verify(token, process.env.SECRET_KEY);
-        } catch (error) {
-            if (error.name === "TokenExpiredError") {
-                return res.status(400).json({
-                    succes: false,
-                    message: "The registration token has expired"
-                })
-            }
-            return res.status(400).json({
-                success: false,
-                message: "Token verification failed.."
-            })
-        }
+  try {
+    const authHeader = req.headers.authorization;
 
-        const user = await User.findById(decoded.id);
-        if (!user) {
-            return res.status(404).json({
-                success: false,
-                message: "User not found"
-            })
-        }
-        user.token = null;
-        user.isVerified = true;
-        await user.save();
-        return res.status(200).json({
-            success: true,
-            message: "Email verified successfully"
-        })
-    } catch (error) {
-        res.status(500).json({
-            succes: false,
-            message: error.message
-        })
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(400).json({
+        success: false,
+        message: "Authorization token is missing or invalid",
+      });
     }
-}
+
+    const token = authHeader.split(" ")[1];
+
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.SECRET_KEY);
+    } catch (error) {
+      if (error.name === "TokenExpiredError") {
+        return res.status(400).json({
+          success: false,
+          message: "The registration token has expired",
+        });
+      }
+      return res.status(400).json({
+        success: false,
+        message: "Token verification failed",
+      });
+    }
+
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (user.isVerified) {
+      return res.status(400).json({
+        success: false,
+        message: "Email already verified",
+      });
+    }
+
+    user.isVerified = true;
+    user.token = null;
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Email verified successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
 
 export const reVerify = async (req, res) => {
     try {
@@ -175,7 +188,7 @@ export const login = async (req, res) => {
         userResponse.password = ""
         await Session.create({ userId: existingUser._id });
         return res.status(200).json({
-            message: `welcome back ${existingUser.firstname}`,
+            message: `✨ Welcome back ${existingUser.firstname}`,
             success: true,
             user: userResponse,
             accessToken,
