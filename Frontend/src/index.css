@@ -36,3 +36,10 @@ box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
       transform: rotate(1turn);
    }
 }
+.custom-shadow-03{
+ box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+}
+
+.input-style {
+  @apply px-3 py-2 border border-gray-300 rounded-lg outline-none font-semibold text-gray-700;
+}

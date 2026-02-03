@@ -12,5 +12,5 @@ const axiosInstanse = axios.create({
 
 export const get = (url)=>axiosInstanse.get(url);
 export const post = (url, data, config = {}) => axiosInstanse.post(url, data, config);
-export const put = (url,data)=> axiosInstanse.put(url,data);
+export const put = (url,data,config={})=> axiosInstanse.put(url,data,config);
 export const del = (url)=>axiosInstanse.delete(url);

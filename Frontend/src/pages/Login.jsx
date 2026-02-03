@@ -3,12 +3,15 @@ import { useNavigate,Link } from 'react-router-dom';
 import { FaUser, FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import toast from 'react-hot-toast';
 import { post } from '../api/endpoint';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../redux/userSlice';
 
 
 const Login = () => {
  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispact = useDispatch();
   const [formData, setFormData] = useState({
     email: "",
     password: ""
@@ -36,6 +39,8 @@ const Login = () => {
       const res = await post("/user/login",formData);
       if(res.data.success){
           toast.success(res?.data?.message);
+          dispact(setUser(res?.data?.user));
+          localStorage.setItem("access-token",res?.data?.accessToken);
           resetVal();
           navigate("/");
       }

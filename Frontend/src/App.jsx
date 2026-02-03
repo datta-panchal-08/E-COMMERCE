@@ -1,5 +1,3 @@
-import React from 'react'
-import {Toaster} from 'react-hot-toast';
 import {createBrowserRouter,RouterProvider} from 'react-router-dom';
 import Home from './pages/Home';
 import Navbar from './components/Navbar';
@@ -7,6 +5,7 @@ import Signup from './pages/Signup';
 import Login from './pages/Login';
 import Verify from './pages/Verify';
 import VerifyEmail from './pages/VerifyEmail';
+import Profile from './pages/Profile';
 
 const router = createBrowserRouter([
   {
@@ -25,6 +24,9 @@ const router = createBrowserRouter([
   },{
     path:"/verify/:token",
     element:<><VerifyEmail/></>
+  },{
+    path:"/profile/:userId",
+    element:<><Navbar/><Profile/></>
   }
 
 ])
@@ -32,7 +34,6 @@ const router = createBrowserRouter([
 const App = () => {
   return (
    <>
-   <Toaster position='top-right'  reverseOrder={false} />
    <RouterProvider router={router}></RouterProvider>
    </>
   )
