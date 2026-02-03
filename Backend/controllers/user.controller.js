@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { verifyEmail } from "../email/emailVerify.js";
 import { Session } from "../models/sessionModel.js";
 import { sendOTPMail } from "../email/sendOTPMail.js";
+import cloudinary from "../utils/cloudinary.js";
 
 export const register = async (req, res) => {
     try {
@@ -380,6 +381,75 @@ export const getUserById =async(req,res)=>{
         return res.status(500).json({
             message:error.message,
             succes:false
+        })
+    }
+}
+
+export const updateUser = async(req,res)=>{
+    try {
+        const userIdToUpdate = req.params.id;
+        const loggedInUser = req.user;
+        const {firstname,lastname,city,address,zipcode,phoneNo,role} = req.body;
+        if(loggedInUser._id.toString() !== userIdToUpdate && loggedInUser.role !== "admin"){
+            return res.status(400).json({
+                success:false,
+                message:"your not allowed to update this profile."
+            });
+        }
+        let user = await User.findById(userIdToUpdate);
+        if(!user){
+            return res.status(404).json({
+                message:"User not found.",
+                success:false
+            });
+        }
+        let profilePicUrl = user.profilepic;
+        let profilePicPublicId = user.profilePublicId;
+
+        // If a new file is uploaded
+        if(req.file){
+            if(profilePicPublicId){
+                await cloudinary.uploader.destroy(profilePicPublicId);
+            }
+            const uploadResult = await new Promise((resolve,reject)=>{
+                const stream = cloudinary.uploader.upload_stream(
+                    {folder:"profiles"},
+                    (error,result)=>{
+                        if(error){
+                            reject(error);
+                        }else{
+                            resolve(result);
+                        }
+                    }
+                ) 
+                stream.end(req.file.buffer);
+            });
+            profilePicUrl = uploadResult.secure_url;
+            profilePicPublicId = uploadResult.public_id;
+        }
+
+        user.firstname = firstname || user.firstname;
+        user.lastname = lastname || user.lastname;
+        user.address = address || user.address;
+        user.city = city || user.city;
+        user.zipcode = zipcode || user.zipcode;
+        user.phoneNo = phoneNo || user.phoneNo;
+        user.profilepic = profilePicUrl;
+        user.profilePublicId = profilePicPublicId;
+        user.role = role || user.role;
+        const updateUser = await user.save();
+        
+        return res.status(200).json({
+            success:true,
+            message:"Profile Updated Successfully!",
+            user:updateUser
+        });
+
+
+    } catch (error) {
+        return res.status(500).json({
+            success:false,
+            message:error.message
         })
     }
 }
