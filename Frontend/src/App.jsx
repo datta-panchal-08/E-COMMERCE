@@ -6,6 +6,7 @@ import Login from './pages/Login';
 import Verify from './pages/Verify';
 import VerifyEmail from './pages/VerifyEmail';
 import Profile from './pages/Profile';
+import Products from './pages/Products';
 
 const router = createBrowserRouter([
   {
@@ -27,9 +28,11 @@ const router = createBrowserRouter([
   },{
     path:"/profile/:userId",
     element:<><Navbar/><Profile/></>
+  },{
+    path:"/products",
+    element:<><Navbar/><Products/></>
   }
-
-])
+]);
 
 const App = () => {
   return (

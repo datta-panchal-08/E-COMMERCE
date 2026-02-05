@@ -43,3 +43,12 @@ box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 .input-style {
   @apply px-3 py-2 border border-gray-300 rounded-lg outline-none font-semibold text-gray-700;
 }
+
+.hide-scrollbar {
+  scrollbar-width: none;     
+  -ms-overflow-style: none; 
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;  
+}  
