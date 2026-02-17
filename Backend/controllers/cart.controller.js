@@ -27,7 +27,7 @@ export const getCart = async(req,res)=>{
 export const addToCart = async(req,res)=>{
     try {
         const userId = req.user._id;
-        const {productId} = req.body;
+        let {productId} = req.body;
 
         const product = await Product.findById(productId);
         if(!product){
@@ -36,7 +36,7 @@ export const addToCart = async(req,res)=>{
                 success:false
             });
         }
-        const cart = await Cart.findOne(userId);
+        let cart = await Cart.findOne({userId});
 
         // Check if Cart Exists with this user
         if(!cart){
@@ -62,7 +62,7 @@ export const addToCart = async(req,res)=>{
                 });
             }
             // Recalculate Total Price
-            cart.totalPrice = cart.items.reduce((acc,item)=> acc + item.price * item.quantity); 
+            cart.totalPrice = cart.items.reduce((acc,item)=> acc + item.price * item.quantity,0); 
         }
 
         await cart.save();
@@ -88,8 +88,9 @@ export const updateQuantity = async(req,res)=>{
     try {
         const userId = req.user._id;
         const{productId,type} = req.body;
-
+        
         let cart  = await Cart.findOne({userId});
+
         if(!cart){
             return res.status(404).json({
                 message:"Cart is empty!",
@@ -113,16 +114,15 @@ export const updateQuantity = async(req,res)=>{
             item.quantity -=1;
         }
         
-        cart.totalPrice = cart.items.reduce((acc,item)=>acc + item.price * item.quantity);
-        
+        cart.totalPrice = cart.items.reduce((acc,item)=>acc +( item.price * item.quantity),0);
+
         await cart.save();
-
         cart = await cart.populate("items.productId");
-
+        
         return res.status(200).json({
             success:true,
             cart
-        })
+        });
 
     } catch (error) {
         return res.status(500).json({
@@ -135,9 +135,9 @@ export const updateQuantity = async(req,res)=>{
 export const removeFromCart = async(req,res)=>{
     try {
         const userId = req.user._id; 
-        const productId = req.body;
+        const { productId } = req.body;
         
-        let cart = await Cart.findOne(userId);
+        let cart = await Cart.findOne({userId});
         if(!cart){
             return res.status(404).json({
                 success:false,
@@ -145,11 +145,17 @@ export const removeFromCart = async(req,res)=>{
             })
         }
 
-        cart.items = cart.items.filter(item=> item.productId.toString() !== productId);
-        cart.totalPrice = cart.items.reduce((acc,item)=> acc + item.price * item.quantity,0);
+        cart.items = cart.items.filter(
+            item => item.productId.toString() !== productId
+        );
+
+        cart.totalPrice = cart.items.reduce(
+            (acc,item)=> acc + item.price * item.quantity,0
+        );
 
         await cart.save();
-    
+        cart = await cart.populate("items.productId");
+
         return res.status(200).json({
             message:"Product removed!",
             success:true,

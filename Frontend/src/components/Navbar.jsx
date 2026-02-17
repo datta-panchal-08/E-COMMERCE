@@ -9,6 +9,7 @@ import { clearUser } from '../redux/userSlice';
 
 const Navbar = () => {
   const {user} = useSelector(store=>store.user);
+  const { cart } = useSelector(state => state.product);
   const dispatch = useDispatch();
   const [accessToken, setAccessToken] = useState(localStorage.getItem("access-token"));
   const [menuOpen, setMenuOpen] = useState(false);
@@ -18,17 +19,14 @@ const Navbar = () => {
   const logoutHandler = async () => {
     try {
       setLoading(true);
-      const res = await post("/user/logout", {}, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      });
+      const res = await post("/user/logout");
 
       if (res?.data?.success) {
         localStorage.removeItem("access-token");
         setAccessToken(null);
         dispatch(clearUser());
         toast.success(res.data.message);
+        navigate("/login");
       }
     } catch (error) {
       console.log(error);
@@ -56,7 +54,9 @@ const Navbar = () => {
 
         <Link to={"/cart"} className='relative ml-5'>
           <PiShoppingCart className='text-2xl text-gray-700' />
-          <span className='bg-pink-500 rounded-full absolute -top-2 -right-2 text-white px-2 text-xs'>0</span>
+          <span className='bg-pink-500 rounded-full absolute flex items-center justify-center -top-2 -right-2 text-white h-5 w-5 text-xs'>
+            {cart?.items?.length || 0}
+          </span>
         </Link>
 
         {user ? (

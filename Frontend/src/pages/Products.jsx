@@ -13,7 +13,7 @@ const Products = () => {
   const [category, setCategory] = useState("All");
   const [search, setSearch] = useState("");
   const [brand, setBrand] = useState("All");
-  const [priceFilter, setPriceFilter] = useState("LowToHigh");
+  const [priceFilter, setPriceFilter] = useState("lowToHigh");
   const [loading, setLoading] = useState(false);
 
   const getAllProducts = async () => {
@@ -32,35 +32,38 @@ const Products = () => {
     }
   }
 
-  useEffect(() => {
-    if (allProducts.length === 0) return;
-    let filtered = [...allProducts];
 
-    if (search.trim() !== "") {
-      filtered = filtered.filter(p => {
-        return p.productName?.toLowerCase().includes(search.toLowerCase());
-      })
-    };
+useEffect(() => {
+  if (allProducts.length === 0) return;
 
-    if (category !== "All") {
-      filtered = filtered.filter(p => p.category === category);
-    };
+  let filtered = [...allProducts];
 
-    if (brand !== "All") {
-      filtered = filtered.filter(p => p.brand === brand);
-    };
+  if (search.trim() !== "") {
+    filtered = filtered.filter(p =>
+      p.productName?.toLowerCase().includes(search.toLowerCase())
+    );
+  }
 
-    if (priceFilter === "LowToHigh") {
-      filtered = [...filtered].sort((a, b) => a.productPrice - b.productPrice);
-    }
+  if (category !== "All") {
+    filtered = filtered.filter(p => p.category === category);
+  }
 
-    if (priceFilter === "HighToLow") {
-      filtered = [...filtered].sort((a, b) => b.productPrice - a.productPrice);
-    }
+  if (brand !== "All") {
+    filtered = filtered.filter(p => p.brand === brand);
+  }
 
-    dispatch(setProducts(filtered));
+  if (priceFilter === "lowToHigh") {
+    filtered = [...filtered].sort((a, b) => a.productPrice - b.productPrice);
+  }
 
-  }, [search,category,brand,priceFilter]);
+  if (priceFilter === "highToLow") {
+    filtered = [...filtered].sort((a, b) => b.productPrice - a.productPrice);
+  }
+
+  dispatch(setProducts(filtered));
+
+}, [search, category, brand, priceFilter, allProducts]);
+
 
   useEffect(() => {
     getAllProducts()

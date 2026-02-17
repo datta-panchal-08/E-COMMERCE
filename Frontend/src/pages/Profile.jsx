@@ -42,7 +42,7 @@ const Profile = () => {
         setFile(selectedFile);
         setUpdateUser({
             ...updateUser,
-            profilePic: URL.createObjectURL(selectedFile), // preview
+            profilePic: URL.createObjectURL(selectedFile),
         });
     };
 
@@ -50,6 +50,7 @@ const Profile = () => {
         e.preventDefault();
         try {
             setLoading(true);
+
             const formdata = new FormData();
             formdata.append("firstname", updateUser.firstname);
             formdata.append("lastname", updateUser.lastname);
@@ -64,69 +65,69 @@ const Profile = () => {
                 formdata.append("file", file);
             }
 
-            const res = await put(
-                `/user/update/${userId}`,
-                formdata,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type":"multipart/form-data"
-                    }
-                }
-            );
-
+            const res = await put(`/user/update/${userId}`, formdata, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data",
+                },
+            });
 
             if (res.data.success) {
                 toast.success(res.data.message);
                 dispatch(setUser(res.data.user));
             }
-
         } catch (error) {
-            toast.error(error.response.data.message)
+            toast.error(error?.response?.data?.message || "Something went wrong");
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="w-full bg-gray-100 min-h-screen py-10">
+        <div className="w-full bg-gray-100 min-h-screen py-8 sm:py-10">
             {/* Tabs */}
-            <div className="flex w-full gap-6 justify-center mb-6">
+            <div className="flex flex-col sm:flex-row w-full gap-4 sm:gap-6 justify-center items-center mb-8 px-4">
                 <button
                     onClick={() => setIsOrederClicked(false)}
-                    className={`px-6 py-1.5 rounded-md font-semibold ${!isOrdercliked ? "bg-white custom-shadow" : ""
-                        }`}
+                    className={`w-full sm:w-auto px-6 py-2 rounded-md font-semibold transition ${
+                        !isOrdercliked
+                            ? "bg-white shadow-md"
+                            : "bg-transparent"
+                    }`}
                 >
                     Profile
                 </button>
 
                 <button
                     onClick={() => setIsOrederClicked(true)}
-                    className={`px-6 py-1.5 rounded-md font-semibold ${isOrdercliked ? "bg-white custom-shadow" : ""
-                        }`}
+                    className={`w-full sm:w-auto px-6 py-2 rounded-md font-semibold transition ${
+                        isOrdercliked
+                            ? "bg-white shadow-md"
+                            : "bg-transparent"
+                    }`}
                 >
                     Orders
                 </button>
             </div>
 
             {!isOrdercliked && (
-                <div className="max-w-6xl flex flex-col items-center mx-auto px-4">
-                    <h2 className="text-xl font-semibold mb-6 text-center">
+                <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <h2 className="text-xl sm:text-2xl font-semibold mb-8 text-center">
                         Update Profile
                     </h2>
 
-                    <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
+                    <div className="flex flex-col lg:flex-row gap-10 items-center lg:items-start justify-center">
                         {/* Profile Image */}
-                        <div className="flex flex-col items-center gap-3">
+                        <div className="flex flex-col items-center gap-4">
                             <img
-                                src={updateUser?.profilePic || userLogo}
-                                className="h-32 w-32 border-2 border-pink-500 rounded-full object-cover"
-                                alt=""
+                                src={ updateUser.profilePic || user.profilepic || userLogo}
+                                className="h-28 w-28 sm:h-32 sm:w-32 border-2 border-pink-500 rounded-full object-cover"
+                                alt="Profile"
                             />
 
                             <label
                                 htmlFor="profilePic"
-                                className="cursor-pointer text-nowrap bg-pink-600 text-white px-4 py-2 rounded-full"
+                                className="cursor-pointer bg-pink-600 text-white px-4 py-2 rounded-full text-sm sm:text-base hover:bg-pink-700 transition"
                             >
                                 Change Picture
                             </label>
@@ -141,10 +142,10 @@ const Profile = () => {
                         </div>
 
                         {/* Form */}
-                        <div className="w-full md:max-w-xl">
+                        <div className="w-full max-w-xl">
                             <form
                                 onSubmit={handleSubmit}
-                                className="bg-white custom-shadow p-6 rounded-md flex flex-col gap-4"
+                                className="bg-white shadow-md p-4 sm:p-6 rounded-lg flex flex-col gap-4"
                             >
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <input
@@ -206,10 +207,17 @@ const Profile = () => {
                                     />
                                 </div>
 
-                                <button className="bg-pink-600 text-white py-2 rounded-md font-semibold hover:bg-pink-700">
-                                    {
-                                        loading ? <div className="flex items-center justify-center"><div className="spinner"></div></div> : "Update Profile"
-                                    }
+                                <button
+                                    type="submit"
+                                    className="w-full bg-pink-600 text-white py-2.5 rounded-md font-semibold hover:bg-pink-700 transition"
+                                >
+                                    {loading ? (
+                                        <div className="flex items-center justify-center">
+                                            <div className="spinner"></div>
+                                        </div>
+                                    ) : (
+                                        "Update Profile"
+                                    )}
                                 </button>
                             </form>
                         </div>

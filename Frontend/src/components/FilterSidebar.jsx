@@ -24,7 +24,7 @@ const FilterSidebar = ({ allProducts, search, setSearch, category, setCategory, 
     setSearch("");
     setCategory("All");
     setBrand("All");
-    setPriceFilter("LowToHigh");
+    setPriceFilter("lowToHigh");
   }
 
   return (
@@ -43,7 +43,12 @@ const FilterSidebar = ({ allProducts, search, setSearch, category, setCategory, 
         {
           uniqueCategory.map((item, index) => {
             return <div key={index} className="flex items-center gap-1">
-              <input type="radio" checked={category === item} name="" id="" onClick={()=>handleCategoryClick(item)} />
+              <input
+                type="radio"
+                name="category"
+                checked={category === item}
+                onChange={() => handleCategoryClick(item)}
+              />
               <label htmlFor="">{item}</label>
             </div>
           })

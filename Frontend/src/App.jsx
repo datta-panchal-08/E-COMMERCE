@@ -7,6 +7,7 @@ import Verify from './pages/Verify';
 import VerifyEmail from './pages/VerifyEmail';
 import Profile from './pages/Profile';
 import Products from './pages/Products';
+import Cart from './pages/Cart';
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,9 @@ const router = createBrowserRouter([
   },{
     path:"/products",
     element:<><Navbar/><Products/></>
+  },{
+    path:"/cart",
+    element:<><Navbar/><Cart/></>
   }
 ]);
 

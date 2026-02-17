@@ -1,11 +1,38 @@
 import React, { useState } from 'react'
 import { BsCart3 } from "react-icons/bs";
+import toast from 'react-hot-toast';
+import { post } from '../api/endpoint';
+import { useDispatch } from 'react-redux';
+import { setCart } from '../redux/productSlice';
+import { useNavigate } from 'react-router-dom';
 
 const ProductCard = ({ product }) => {
 
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const token = localStorage.getItem("access-token");
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
     const selectImg = (index) => {
         setSelectedIndex(index);
+    }
+
+    const addToCart = async (productId) => {
+        try {
+            setLoading(true);
+            let res = await post("/cart/add", { productId });
+
+            if (res.data.success) {
+                dispatch(setCart(res?.data?.cart));
+                toast.success(res?.data?.message);
+                navigate("/cart");
+            }
+
+        } catch (error) {
+            toast.error(error.response.data.message);
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -35,8 +62,11 @@ const ProductCard = ({ product }) => {
                     <h3 className='font-semibold'>₹ {product.productPrice.toLocaleString("en-IN")}</h3>
                 </div>
                 <div className="">
-                    <button className='bg-zinc-700 rounded-md cursor-pointer hover:bg-zinc-800 duration-300 w-full text-sm uppercase text-white flex items-center justify-center gap-3 py-1.5 font-semibold'>
-                        <BsCart3 className='text-xl' /> Add to cart
+                    <button type="button" onClick={() => addToCart(product._id)}
+                        className='bg-pink-600 rounded-md cursor-pointer hover:bg-pink-700 duration-300 w-full text-sm uppercase text-white flex items-center justify-center gap-3 py-1.5 font-semibold'>
+                        {
+                            loading ? <div className="flex items-center justify-center"><div className="spinner"></div></div> : <><BsCart3 className='text-xl' /> Add to cart</>
+                        }
                     </button>
                 </div>
             </div>
