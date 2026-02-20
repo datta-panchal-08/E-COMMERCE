@@ -3,17 +3,18 @@ import { Link, useNavigate } from 'react-router-dom';
 import { PiShoppingCart } from "react-icons/pi";
 import { HiOutlineMenu, HiOutlineX } from "react-icons/hi";
 import { post } from '../api/endpoint';
-import toast from 'react-hot-toast';
+import {toast} from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { clearUser } from '../redux/userSlice';
 
 const Navbar = () => {
-  const {user} = useSelector(store=>store.user);
+  const {user} = useSelector(state=>state.user);
   const { cart } = useSelector(state => state.product);
   const dispatch = useDispatch();
   const [accessToken, setAccessToken] = useState(localStorage.getItem("access-token"));
   const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const admin = user?.role === "admin" ? true : false;
   const [loading,setLoading] = useState(false);
 
   const logoutHandler = async () => {
@@ -26,7 +27,6 @@ const Navbar = () => {
         setAccessToken(null);
         dispatch(clearUser());
         toast.success(res.data.message);
-        navigate("/login");
       }
     } catch (error) {
       console.log(error);
@@ -46,10 +46,11 @@ const Navbar = () => {
 
       {/* Desktop Nav */}
       <nav className='hidden md:flex items-center gap-5'>
-        <ul className='flex gap-7 items-center text-lg md:text-xl'>
+        <ul className='flex gap-7 items-center text-lg '>
           <Link to={"/"} className='font-semibold text-gray-600 hover:text-pink-500 duration-300'>Home</Link>
           <Link to={"/products"} className='font-semibold text-gray-600 hover:text-pink-500 duration-300'>Products</Link>
           {user && <Link to={`/profile/${user._id}`} className='font-semibold text-gray-600 cursor-pointer hover:text-pink-500 duration-300'>Hi, {user?.firstname}</Link>}
+          {admin && <Link to={`/dashboard/sales`} className='font-semibold text-gray-600 cursor-pointer hover:text-pink-500 duration-300'>Dashboard</Link>}
         </ul>
 
         <Link to={"/cart"} className='relative ml-5'>

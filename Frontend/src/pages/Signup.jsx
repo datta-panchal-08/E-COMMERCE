@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FaUser, FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { post } from "../api/endpoint";
-import toast from "react-hot-toast";
+import {toast} from "react-toastify";
 
 const Signup = () => {
   const [showPassword, setShowPassword] = useState(false);

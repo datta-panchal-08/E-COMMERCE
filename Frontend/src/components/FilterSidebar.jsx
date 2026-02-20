@@ -28,7 +28,7 @@ const FilterSidebar = ({ allProducts, search, setSearch, category, setCategory, 
   }
 
   return (
-    <div className=' hidden mt-5 md:flex md:flex-col md:gap-3 px-2 py-4  bg-gray-100 rounded-md h-[70vh] w-[13rem]'>
+    <div className=' hidden mt-5 md:flex md:flex-col md:gap-3 px-2 py-4  bg-gray-100 rounded-md h-[70vh] w-fit'>
       <div className="search">
         <input
         type="text"

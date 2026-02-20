@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import FilterSidebar from '../components/FilterSidebar'
 import ProductCard from '../components/ProductCard'
-import { toast } from 'react-hot-toast'
+import { toast } from 'react-toastify'
 import { get } from '../api/endpoint'
 import { useDispatch, useSelector } from 'react-redux'
 import { setProducts } from '../redux/productSlice'

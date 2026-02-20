@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { FaArrowLeftLong, FaRegTrashCan } from "react-icons/fa6";
 import { useDispatch, useSelector } from 'react-redux';
 import { TfiMinus, TfiPlus } from "react-icons/tfi";
-import toast from 'react-hot-toast';
+import {toast} from 'react-toastify';
 import { PiShoppingCart } from 'react-icons/pi';
 import { del, put } from '../api/endpoint';
 import { setCart } from '../redux/productSlice';
@@ -146,7 +146,7 @@ return cart?.items?.length > 0 ? (
           <div className="flex items-center justify-between text-sm sm:text-base">
             <span>
               Subtotal
-              <span className='text-gray-400'> ({cart.items.length} items)</span>
+              <span className='text-gray-400'> ({cart.items.length} {cart.items.length > 1 ? "items":"item"} )</span>
             </span>
             <h2 className='font-semibold text-gray-700'>
               ₹{cart?.totalPrice.toLocaleString("en-IN") || 0}

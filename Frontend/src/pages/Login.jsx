@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { useNavigate,Link } from 'react-router-dom';
 import { FaUser, FaEnvelope, FaLock, FaEye, FaEyeSlash } from "react-icons/fa";
-import toast from 'react-hot-toast';
+import {toast} from 'react-toastify';
 import { post } from '../api/endpoint';
 import { useDispatch } from 'react-redux';
 import { setUser } from '../redux/userSlice';

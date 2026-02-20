@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import userLogo from "/User.png";
 import { put } from "../api/endpoint";
-import toast from "react-hot-toast";
+import {toast} from "react-toastify";
 import { setUser } from "../redux/userSlice";
 
 const Profile = () => {
